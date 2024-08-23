@@ -1,19 +1,12 @@
 package org.example.UniversityRestAPI;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class UniversityApplication {
     public static void main(String[] args) {
         SpringApplication.run(UniversityApplication.class, args);
-    }
-
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder){
-        return builder.build();
     }
 }
