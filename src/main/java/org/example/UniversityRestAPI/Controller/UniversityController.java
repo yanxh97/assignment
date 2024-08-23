@@ -26,12 +26,16 @@ public class UniversityController {
 
     @GetMapping
     public ResponseEntity<List<University>> getAllUniversity() {
-        return new ResponseEntity<>(universityService.getAllUniversity(), HttpStatus.OK);
+        List<University> res = universityService.getAllUniversity();
+        if (res == null || res.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/{country}")
     public ResponseEntity<List<University>> getUniversityByCountry(@PathVariable("country") String country){
-        return new ResponseEntity<>(universityService.getUniversityByCountry(country), HttpStatus.OK);
+        List<University> res = universityService.getUniversityByCountry(country);
+        if (res == null || res.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 

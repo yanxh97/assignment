@@ -6,6 +6,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -33,9 +34,15 @@ public class UniversityImpl1 implements UniversityService{
     public List<University> getAllUniversity() {
 
         CompletableFuture<List<University>> cf = CompletableFuture.supplyAsync(() ->{
-            ResponseEntity<University[]> resp = restTemplate.getForEntity("http://universities.hipolabs.com/search", University[].class);
-            if (resp.getStatusCode() != HttpStatus.OK) return Collections.emptyList();
-            if (resp.getBody() == null) return Collections.emptyList();
+            ResponseEntity<University[]> resp;
+            try{
+                resp = restTemplate.getForEntity("http://universities.hipolabs.com/search", University[].class);
+            }catch(RestClientException e){
+                return Collections.emptyList();
+            }
+
+            // IDE says resp would always be not null
+            if (resp.getStatusCode() != HttpStatus.OK || resp.getBody() == null) return Collections.emptyList();
 
             return Arrays.asList(Objects.requireNonNull(resp.getBody()));
         }, taskExecutor);
@@ -51,10 +58,15 @@ public class UniversityImpl1 implements UniversityService{
     @Override
     public List<University> getUniversityByCountry(String country) {
         CompletableFuture<List<University>> cf = CompletableFuture.supplyAsync(() -> {
-            ResponseEntity<University[]> resp = restTemplate.getForEntity("http://universities.hipolabs.com/search?country=" + country, University[].class);
+            ResponseEntity<University[]> resp;
+            try {
+                resp = restTemplate.getForEntity("http://universities.hipolabs.com/search?country=" + country, University[].class);
+            } catch (RestClientException e) {
+                return Collections.emptyList();
+            }
 
-            if (resp.getStatusCode() != HttpStatus.OK) return Collections.emptyList();
-            if (resp.getBody() == null) return Collections.emptyList();
+            // IDE says resp would always be not null
+            if (resp.getStatusCode() != HttpStatus.OK || resp.getBody() == null) return Collections.emptyList();
 
             return Arrays.asList(Objects.requireNonNull(resp.getBody()));
         }, taskExecutor2);
